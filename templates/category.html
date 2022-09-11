@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block body %}
+{% if name %}
+<h1 class="heading">{{name}} Movies</h1>
+{% endif %}
+
+<script>
+    let jsonObj={
+    api_key : "?api_key=40e9173d75720c58e466975159f997ce&language=en-US",
+    base_url : "https://api.themoviedb.org/3/movie/",
+    movie_id : "19995",
+    image_url: "https://image.tmdb.org/t/p/w500"
+};
+
+async function myfunc1(movieid){
+    query=jsonObj.base_url+movieid+jsonObj.api_key
+var response = await fetch(query);
+var data = await response.json();
+//console.log(data.title);
+return data;
+}
+
+async function getData(){
+    var data1=[];
+    let m_data=``;
+    let d1="";
+    {% for m in m_id %}
+        d1=await myfunc1({{m}});
+        data1.push(d1);
+        //console.log(data1);
+    {% endfor %}
+    for (let i = 0; i < data1.length; i++) {
+        m_data+=`
+<a href="/${data1[i].title}">
+  <div class="bx">
+    <img src=${jsonObj.image_url+data1[i].poster_path}  alt="">
+    <div class="content">
+      <h3>${data1[i].title}</h3>
+      <p>`
+      for (let j = 0; j < data1[i].genres.length; j++) {
+          m_data+=`${data1[i].genres[j].name} `
+          if (j === 2) { break; }
+      }
+      m_data+=`</p>
+      <h6><span>IMDB</span><i class="bi bi-star-fill"></i> ${data1[i].vote_average}</h6>
+    </div>
+  </div>
+</a>
+`
+
+        
+    }
+    document.getElementById('cards').innerHTML=m_data;
+    //console.log(data1[0].overview);
+    //return m_data;
+}
+getData();
+</script>
+
+<div id="cards"></div>
+
+
+<!-- Optional JavaScript; choose one of the two! -->
+
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+<!-- Option 2: Separate Popper and Bootstrap JS -->
+<!--
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+-->
+{% endblock body %}
+   
